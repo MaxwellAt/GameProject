@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "findmegame( - wia?cat - )"
+version = "0.1.0"
+description = ""
+authors = ["Jêfferson Maxwell <jeffersonmaxwell1603@gmail.com>"]
+readme = "README.md"
+packages = [{include = "findmegame( _ wia?cat _ )"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pygame = "^2.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
