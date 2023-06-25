@@ -3,18 +3,37 @@ import random
 
 
 
-largura_tela = 1280
-altura_tela = 720
+
+
 pygame.init()
+
+altura_e_largura = [(1280, 720), (640, 480), (320, 240)]
+
+option = 1
+largura_tela, altura_tela = altura_e_largura[option][0], altura_e_largura[option][1]
+
+scala_tranform = (128,128)
+if largura_tela < 1280:
+    scala_tranform = (64,64)
+elif largura_tela < 640:
+    scala_tranform = (32,32)
+elif largura_tela < 320:
+    scala_tranform = (8,8)
+
+escala_para_posicoes = (scala_tranform[1]*0.01)
+
+
 screen = pygame.display.set_mode((largura_tela, altura_tela))
-pygame.display.set_caption("KWIA ?")
+pygame.display.set_caption("Sabe onde eu estou ? S.O.E.E.")
+# pygame.display.set_caption("KWIA ?")
 clock = pygame.time.Clock()
 running = True
 pontos = 0
 
-titleFonte = pygame.font.Font(None, 64).render
-textFont = pygame.font.Font(None, 32).render
-dicaFont = pygame.font.Font(None, 16).render
+
+titleFonte = pygame.font.Font(None, scala_tranform[0]//2).render
+textFont = pygame.font.Font(None, scala_tranform[0]//2).render
+dicaFont = pygame.font.Font(None, scala_tranform[0]//2).render
 
 allSprites_group = pygame.sprite.Group()
 
@@ -28,16 +47,16 @@ class Personagem(pygame.sprite.Sprite):
         personagem_imagem = pygame.image.load("Assets/Player/Idle.png").convert_alpha()
         personagem_gun = pygame.image.load("Assets/Player/Shoot.png").convert_alpha()
         self.tiroDireita = [
-            pygame.transform.scale(personagem_gun.subsurface(pygame.Rect((2 * 32, 64), (32, 32))),(128, 128)),
-            pygame.transform.scale(personagem_gun.subsurface(pygame.Rect((3 * 32, 64), (32, 32))),(128, 128)),
+            pygame.transform.scale(personagem_gun.subsurface(pygame.Rect((2 * 32, 64), (32, 32))),scala_tranform),
+            pygame.transform.scale(personagem_gun.subsurface(pygame.Rect((3 * 32, 64), (32, 32))),scala_tranform),
         ]
         self.tiroEsquerda = [
-            pygame.transform.scale(personagem_gun.subsurface(pygame.Rect((2 * 32, 96), (32, 32))),(128, 128)),
-            pygame.transform.scale(personagem_gun.subsurface(pygame.Rect((3 * 32, 96), (32, 32))),(128, 128)),
+            pygame.transform.scale(personagem_gun.subsurface(pygame.Rect((2 * 32, 96), (32, 32))),scala_tranform),
+            pygame.transform.scale(personagem_gun.subsurface(pygame.Rect((3 * 32, 96), (32, 32))),scala_tranform),
         ]
         for i in range(2):
             img = personagem_imagem.subsurface(pygame.Rect((i * 32, 0), (32, 32)))
-            img = pygame.transform.scale(img, (128, 128))
+            img = pygame.transform.scale(img, scala_tranform)
             self.imagens.append(img)
         self.index_lista = 0
         self.image = self.imagens[self.index_lista]
@@ -45,7 +64,7 @@ class Personagem(pygame.sprite.Sprite):
         self.ImagemParaDireita = []
         for i in range(2):
             img = personagem_imagem.subsurface(pygame.Rect((i * 32, 64), (32, 32)))
-            img = pygame.transform.scale(img, (128, 128))
+            img = pygame.transform.scale(img, scala_tranform)
             self.ImagemParaDireita.append(img)
         self.index_lista = 0
         self.image = self.ImagemParaDireita[self.index_lista]
@@ -53,14 +72,14 @@ class Personagem(pygame.sprite.Sprite):
         self.ImagemParaEsquerda = []
         for i in range(2):
             img = personagem_imagem.subsurface(pygame.Rect((i * 32, 96), (32, 32)))
-            img = pygame.transform.scale(img, (128, 128))
+            img = pygame.transform.scale(img, scala_tranform)
             self.ImagemParaEsquerda.append(img)
         self.index_lista = 0
         self.image = self.ImagemParaEsquerda[self.index_lista]
 
 
         self.rect = self.image.get_rect()
-        self.rect.center = (100,altura_tela - 100)
+        self.rect.center = (100 * escala_para_posicoes , altura_tela - (100* escala_para_posicoes))
 
     def update(self):
         velocidade_animation = 0.2
@@ -105,7 +124,7 @@ class Personagem(pygame.sprite.Sprite):
                     self.animation = "direita"
                 elif event.key == pygame.K_w:
                     self.rect.y -= 10
-                elif event.key == pygame.K_s and self.rect.y < altura_tela - 128:
+                elif event.key == pygame.K_s and self.rect.y < altura_tela - (128 * escala_para_posicoes):
                     self.rect.y += 10
                 elif event.key == pygame.K_SPACE:
                     if self.animation == "direita":
@@ -117,12 +136,10 @@ class Personagem(pygame.sprite.Sprite):
                         self.animation = "tiro_esquerda"
                         tiro = Tiro(direcao="esquerda")
                         allSprites_group.add(tiro)
-                        tiro.rect.center = self.rect.center
-                elif event.key == pygame.K_q:
-                    cena = 1
+                        tiro.rect.center = self.rect.center        
                 elif event.key == pygame.K_l:
-                    self.rect.y -= 100
-                    self.rect.x += 10
+                    self.rect.y -= (100 * escala_para_posicoes)
+                    self.rect.x += (10 * escala_para_posicoes)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     if self.animation == "tiro_direita":
@@ -132,9 +149,6 @@ class Personagem(pygame.sprite.Sprite):
 
         # if self.rect.y > altura_tela - 100:
         #     self.rect.y = 500
-
-        if self.rect.y < 500: # 500 é o chão.  E isso serve para fazer a mecanica de fisica do chaol
-            self.rect.y += 10
 
 personagem = Personagem()
 
@@ -146,7 +160,7 @@ class Tiro(pygame.sprite.Sprite):
         self.imagens = []
         for i in range(1):
             img = tiro_imagem.subsurface(pygame.Rect((0, i * 32), (32, 32)))
-            img = pygame.transform.scale(img, (32, 32))
+            img = pygame.transform.scale(img, (scala_tranform[1]//4, scala_tranform[1]//4))
             self.imagens.append(img)
         self.index_lista = 0
         self.image = self.imagens[self.index_lista]
@@ -182,20 +196,27 @@ class Lifebar(pygame.sprite.Sprite):
         self.imagens = []
         for i in range(4):
             img = lifeBar.subsurface(pygame.Rect((i * 32, 32), (32+16, 16)))
-            img = pygame.transform.scale(img, (256, 128))
+            img = pygame.transform.scale(img, scala_tranform)
             self.imagens.append(img)
         self.index_lista = 0
         self.image = self.imagens[self.index_lista]
 
         self.rect = self.image.get_rect()
-        self.rect.center = (140, 50)
+        self.rect.center = (100 * escala_para_posicoes, 40 * escala_para_posicoes)
         self.colisoes = 0
 
     def update(self):
-        if self.colisoes>=1:
+        if self.colisoes>=1 and self.colisoes<4:
+            if self.index_lista >= len(self.imagens) - 1:
+                self.index_lista = 0
             self.index_lista += 1
             self.image = self.imagens[self.index_lista]
-            personagem.rect.x -= 50
+            personagem.rect.x -= 90
+            inimigo.kill()
+            allSprites_group.remove(inimigo)
+        if self.colisoes >= 4:
+            self.colisoes = 0
+            personagem.rect.x -= 90
 lifebar = Lifebar()
 
 class Inimigo(pygame.sprite.Sprite):
@@ -208,20 +229,20 @@ class Inimigo(pygame.sprite.Sprite):
             inimigo_imagem = pygame.image.load("Assets/Primeira fase/Pixel_Enemy_Platformer/Orc_Big.png").convert_alpha()
             for i in range(3):
                 img = inimigo_imagem.subsurface(pygame.Rect((0, i * 32), (64, 32)))
-                img = pygame.transform.scale(img, (128, 128))
+                img = pygame.transform.scale(img, scala_tranform)
                 self.imagens.append(img)
         elif tipo == "zombie":
             inimigo_imagem = pygame.image.load("Assets/Primeira fase/Pixel_Enemy_Platformer/Zombie_Big.png").convert_alpha()
             for i in range(3):
                 img = inimigo_imagem.subsurface(pygame.Rect(( 32, i * 32), (32, 32)))
-                img = pygame.transform.scale(img, (128, 128))
+                img = pygame.transform.scale(img, scala_tranform)
                 self.imagens.append(img)
         elif tipo == "Skeleton":
             # Corrigir depois
             inimigo_imagem = pygame.image.load("Assets/Primeira fase/Pixel_Enemy_Platformer/Skeleton_Big.png").convert_alpha()
             for i in range(8):
                 img = inimigo_imagem.subsurface(pygame.Rect(( i * 47,  32/2+5), (32, 32)))
-                img = pygame.transform.scale(img, (128, 128))
+                img = pygame.transform.scale(img, scala_tranform)
                 self.imagens.append(img)
         
 
@@ -259,10 +280,10 @@ class PauseButton(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         playbutton = pygame.image.load("Assets/Lucid V1.2/PNG/Flat/64/Pause.png")
-        playbutton = pygame.transform.scale(playbutton, (32, 32))
+        playbutton = pygame.transform.scale(playbutton, (scala_tranform[1]//4, scala_tranform[1]//4))
         self.image = playbutton
         self.rect = self.image.get_rect()
-        self.rect.center = ((largura_tela//2)-10, 25)
+        self.rect.center = ((largura_tela//2)-10 * escala_para_posicoes, 25 *  escala_para_posicoes)
     
     def update(self):
         self.rect.center = ((largura_tela//2)-10, 25)
@@ -281,7 +302,7 @@ class arma(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load("Assets/gun.jpg").convert_alpha().subsurface(pygame.Rect((0, 0), (32, 32))) # achar uma boa imagem para ser a arma
-        self.image = pygame.transform.scale(self.image, (128, 128))
+        self.image = pygame.transform.scale(self.image, scala_tranform)
         self.rect = self.image.get_rect()
         self.rect.center = (largura_tela - 100, altura_tela - 100)
     
@@ -302,8 +323,11 @@ def PrimeiraFase():
     background = pygame.transform.scale(background, (largura_tela, altura_tela))
     #definir o background
     screen.blit(background, (0, 0))
-    pygame.draw.rect(screen, "GREY", (0, 600, largura_tela, 120))
-    screen.blit(titleFonte(f"Pontos: {pontos}", True, "WHITE"), (largura_tela - 210,10))
+    # plataforma
+    plataforma_pos = (0, altura_tela - 50, largura_tela, 100 * escala_para_posicoes)
+    pygame.draw.rect(screen, "GREY", plataforma_pos)
+
+    screen.blit(titleFonte(f"Pontos: {pontos}", True, "WHITE"), (largura_tela - ( 210 * escala_para_posicoes),10))
 
     
     allSprites_group.add(personagem)
@@ -314,6 +338,11 @@ def PrimeiraFase():
     # allSprites_group.add(gun)
 
 
+    # mecanica de fisica para manter o personagem na plataforma
+    if personagem.rect.center[1] <= altura_tela - (120 * escala_para_posicoes):
+        personagem.rect.y += 10
+
+
     if pontos < 1 :
         allSprites_group.add(inimigo)
 
@@ -321,7 +350,7 @@ def PrimeiraFase():
 
     if pontos >= 20:
         allSprites_group.empty()
-        screen.blit(titleFonte("Parabéns, você passou de fase", True, "WHITE"), (largura_tela // 2 - 400, altura_tela // 2 - 100))
+        screen.blit(titleFonte("Parabéns, você passou de fase", True, "WHITE"), ((largura_tela // 2 - 400) * escala_para_posicoes, (altura_tela // 2 - 100) * escala_para_posicoes ))
         # cena = 3
         screen.blit(titleFonte("Infelizmente não ha mais fases", True, "WHITE"), (largura_tela // 2 - 300, altura_tela // 2 - 50))
         screen.blit(titleFonte("Aperte na tecla 'Q' para voltar ao menu", True, "WHITE"), (largura_tela // 2 - 250, altura_tela // 2))
@@ -330,19 +359,21 @@ def PrimeiraFase():
     # colocar a pontuação na tela
 
 
-num_frame = 30
-cena = 0
+music = True
+num_frame = 60
+cenas = {
+    "menu": 0,
+    "config": 1,
+    "historia": 2,
+    "primeira_fase": 3,
+    "segunda_fase": 4,
+}
+cena = cenas["primeira_fase"]
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if cena == 0:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    if pygame.mouse.get_pos()[0] > (largura_tela // 2) - 190 and pygame.mouse.get_pos()[0] < (largura_tela // 2) + 180:
-                        if pygame.mouse.get_pos()[1] > (altura_tela // 2) - 90 and pygame.mouse.get_pos()[1] < (altura_tela // 2) + 0:
-                            cena = 1
-        elif cena>= 2:
+        if cena>= 2:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if pygame.mouse.get_pos()[0] > ((largura_tela//2)-10) and pygame.mouse.get_pos()[0] < ((largura_tela//2)-10)+32:
@@ -360,15 +391,103 @@ while running:
     screen.fill("black")
 
 
-    if cena == 0:
-        #posições das coisas
+    if cena == cenas["menu"]:        
+            
         playPos = ((largura_tela // 2) + 80, (altura_tela // 2)-80)
         playbutton = pygame.image.load("./Assets/Lucid V1.2/PNG/Flat/64/Play.png")
-        playbutton = pygame.transform.scale(playbutton, (64, 64))
-        pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 190, (altura_tela // 2)-90, 370, 90), 2)
+        playbutton = pygame.transform.scale(playbutton, (scala_tranform[1]//2, scala_tranform[1]//2))
+
         screen.blit(playbutton, playPos)
         screen.blit(titleFonte("Play Game", True, "WHITE"), ((largura_tela // 2)-170, (altura_tela // 2)-70))
-    elif cena == 1:
+        screen.blit(titleFonte("S.O.E.E.", True, "WHITE"), ((largura_tela // 2)-120, (altura_tela // 2)-200))
+        screen.blit(textFont("(Sabe onde eu estou ?)", True, "WHITE"), ((largura_tela // 2)-120, (altura_tela // 2)-150))
+        # screen.blit(titleFonte("KWIA ?", True, "WHITE"), ((largura_tela // 2)-120, (altura_tela // 2)-200))
+        # screen.blit(textFont("(Know Where I Are?)", True, "WHITE"), ((largura_tela // 2)-120, (altura_tela // 2)-150))
+        pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 190, (altura_tela // 2)-90, 370, 90), 2)
+
+
+        config_button = pygame.image.load("./Assets/Lucid V1.2/PNG/Flat/64/Three-Dots-Horizontal.png")
+        config_button = pygame.transform.scale(config_button, (scala_tranform[1]//2, scala_tranform[1]//2))
+        configPos = ((largura_tela // 2) + 80, (altura_tela // 2)+20)
+    
+        screen.blit(config_button, configPos)
+        screen.blit(titleFonte("Settings", True, "WHITE"), ((largura_tela // 2)-170, configPos[1]+10))
+        pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 190, configPos[1]-10, 370, 90), 2)
+
+        for event in pygame.event.get(): 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if pygame.mouse.get_pos()[0] > (largura_tela // 2) - 190 and pygame.mouse.get_pos()[0] < (largura_tela // 2) + 180:
+                        if pygame.mouse.get_pos()[1] > (altura_tela // 2) - 90 and pygame.mouse.get_pos()[1] < (altura_tela // 2) + 0:
+                            cena = cenas["historia"]
+                    if pygame.mouse.get_pos()[0] > (largura_tela//2)-190 and pygame.mouse.get_pos()[0] < (largura_tela//2)+180:
+                        if pygame.mouse.get_pos()[1] > (altura_tela//2)-10 and pygame.mouse.get_pos()[1] < (altura_tela//2)+80:
+                            cena = cenas["config"]
+    elif cena == cenas["config"]:
+        screen.blit(titleFonte("Configurações", True, "WHITE"), ((largura_tela // 2)-170, (altura_tela // 2)-200))
+        screen.blit(textFont("Aperte na tecla 'Q' para voltar ao menu", True, "WHITE"), ((largura_tela // 2)-170, (altura_tela // 2)-150))
+
+        # modificar o tamanho da tela
+        screen.blit(titleFonte("Tamanho da tela", True, "WHITE"), ((largura_tela // 2)-170, (altura_tela // 2)-100))
+        pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 180, (altura_tela // 2)-110, 400, 60*4), 2)
+
+        screen.blit(textFont("1280x720", True, "WHITE"), ((largura_tela // 2)-20, (altura_tela // 2)-40))
+        pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 180, (altura_tela // 2)-50, 400, 40), 2)
+
+        screen.blit(textFont("640x480", True, "WHITE"), ((largura_tela // 2)-20, (altura_tela // 2)+20))
+        pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 180, (altura_tela // 2)+10, 400, 40), 2)
+        
+        screen.blit(textFont("320x240", True, "WHITE"), ((largura_tela // 2)-20, (altura_tela // 2)+80))
+        pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 180, (altura_tela // 2)+70, 400, 40), 2)
+
+
+        music_symbol = pygame.image.load("./Assets/Lucid V1.2/PNG/Flat/64/Music-0.png")
+
+        screen.blit(music_symbol, ((largura_tela // 2)-100, (altura_tela // 2)+160))
+        screen.blit(textFont(f"Musica: {music}", True, "WHITE"), ((largura_tela // 2)-10, (altura_tela // 2)+180))
+        pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 180, (altura_tela // 2)+150, 400, 90), 2)
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    cena = cenas["menu"]
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if pygame.mouse.get_pos()[0] > (largura_tela // 2) - 190 and pygame.mouse.get_pos()[0] < (largura_tela // 2) + 180:
+                        if pygame.mouse.get_pos()[1] > (altura_tela // 2) - 90 and pygame.mouse.get_pos()[1] < (altura_tela // 2) + 0:
+                            option = 0
+                            largura_tela, altura_tela = altura_e_largura[option][0], altura_e_largura[option][1]
+                            screen = pygame.display.set_mode((largura_tela, altura_tela))
+                            pygame.display.set_caption("Sabe onde eu estou ? S.O.E.E.")
+                            running = True
+                            pontos = 0
+                            cena = cenas["menu"]
+                    if pygame.mouse.get_pos()[0] > (largura_tela // 2) - 190 and pygame.mouse.get_pos()[0] < (largura_tela // 2) + 180:
+                        if pygame.mouse.get_pos()[1] > (altura_tela // 2) - 40 and pygame.mouse.get_pos()[1] < (altura_tela // 2) + 50:
+                            option = 1
+                            largura_tela, altura_tela = altura_e_largura[option][0], altura_e_largura[option][1]
+                            screen = pygame.display.set_mode((largura_tela, altura_tela))
+                            pygame.display.set_caption("Sabe onde eu estou ? S.O.E.E.")
+                            running = True
+                            pontos = 0
+                            cena = cenas["menu"]
+                    if pygame.mouse.get_pos()[0] > (largura_tela // 2) - 190 and pygame.mouse.get_pos()[0] < (largura_tela // 2) + 180:
+                        if pygame.mouse.get_pos()[1] > (altura_tela // 2) + 20 and pygame.mouse.get_pos()[1] < (altura_tela // 2) + 110:
+                            option = 2
+                            largura_tela, altura_tela = altura_e_largura[option][0], altura_e_largura[option][1]
+                            screen = pygame.display.set_mode((largura_tela, altura_tela))
+                            pygame.display.set_caption("Sabe onde eu estou ? S.O.E.E.")
+                            running = True
+                            pontos = 0
+                            cena = cenas["menu"]
+                    if pygame.mouse.get_pos() > ((largura_tela // 2)-190, (altura_tela // 2)+140) and pygame.mouse.get_pos() < ((largura_tela // 2)+180, (altura_tela // 2)+230):
+                        music = not music
+                        print(f"musica {music}")
+
+
+
+    elif cena == cenas["historia"]:
         personagem_imagem = pygame.image.load("Assets/Player/Idle.png").convert_alpha()
         screen.blit(pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((0 * 32, 0), (32, 32))),(1280, 1280)), (-350, -40))
         screen.blit(titleFonte("Historia", True, "WHITE"), (170, 70))        
@@ -381,13 +500,14 @@ while running:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_l:
-                    cena = 2
+                    cena = cenas["primeira_fase"]
                 elif event.key == pygame.K_q:
-                    cena = 1
-    elif cena == 2:
+                    cena = cenas["menu"]
+    elif cena == cenas["primeira_fase"]:
         PrimeiraFase()
         allSprites_group.update()
         allSprites_group.draw(screen)
+
 
     pygame.display.flip()
 
