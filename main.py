@@ -1,6 +1,7 @@
 import pygame
 import random
 
+
 largura_tela = 1280
 altura_tela = 720
 pygame.init()
@@ -11,25 +12,8 @@ running = True
 pontos = 0
 
 titleFonte = pygame.font.Font(None, 64).render
-
-def PlayButton():
-
-    #posições das coisas
-    playPos = ((largura_tela // 2) + 80, (altura_tela // 2)-80)
-
-
-    playbutton = pygame.image.load("./Assets/Lucid V1.2/PNG/Flat/64/Play.png")
-    playbutton = pygame.transform.scale(playbutton, (64, 64))
-
-    pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 190, (altura_tela // 2)-90, 370, 90), 2)
-
-
-    screen.blit(playbutton, playPos)
-    screen.blit(titleFonte("Play Game", True, "WHITE"), ((largura_tela // 2)-170, (altura_tela // 2)-70))
-
-
-
-
+textFont = pygame.font.Font(None, 32).render
+dicaFont = pygame.font.Font(None, 16).render
 
 allSprites_group = pygame.sprite.Group()
 
@@ -172,18 +156,19 @@ class Tiro(pygame.sprite.Sprite):
         if pygame.sprite.collide_rect(self, inimigo):
             inimigo.kill()
             allSprites_group.remove(self)
+            allSprites_group.remove(inimigo)
             global pontos
             pontos += 1
-            if pontos < 20:
-                others = Inimigo()
-                allSprites_group.add(others)
+            # if pontos < 20:
+            #     inimigo.kill()
+            #     allSprites_group.add(inimigo)
+            #     allSprites_group.add(inimigo)
         if self.rect.x > largura_tela or self.rect.x < 0 or self.rect.y > altura_tela or self.rect.y < 0:
             allSprites_group.remove(self)
         if self.direction == "direita":
             self.rect.x +=10
         elif self.direction == "esquerda":
             self.rect.x -=10
-
 
 class Lifebar(pygame.sprite.Sprite):
     def __init__(self):
@@ -226,7 +211,7 @@ class Inimigo(pygame.sprite.Sprite):
         if pygame.sprite.collide_rect(self,personagem):
             lifebar.colisoes+=1
         if self.index_lista >= len(self.imagens) - 1:
-            self.index_lista = 0
+            self.index_lista = 0    
         else:
             self.index_lista += 1
         self.image = self.imagens[self.index_lista]
@@ -284,16 +269,17 @@ def PrimeiraFase():
 
     allSprites_group.add(lifebar)
 
-    allSprites_group.add(inimigo)
+    if pontos < 1 :
+        allSprites_group.add(inimigo)
 
     allSprites_group.add(botaoPause)
 
     if pontos >= 20:
         allSprites_group.empty()
         screen.blit(titleFonte("Parabéns, você passou de fase", True, "WHITE"), (largura_tela // 2 - 400, altura_tela // 2 - 100))
-        # cena = 3
-        screen.blit(titleFonte("Infelizmente não ha mais fases", True, "WHITE"), (largura_tela // 2 - 300, altura_tela // 2 - 50))
-        screen.blit(titleFonte("Aperte na tecla 'Q' para voltar ao menu", True, "WHITE"), (largura_tela // 2 - 250, altura_tela // 2))
+        cena = 3
+        # screen.blit(titleFonte("Infelizmente não ha mais fases", True, "WHITE"), (largura_tela // 2 - 300, altura_tela // 2 - 50))
+        # screen.blit(titleFonte("Aperte na tecla 'Q' para voltar ao menu", True, "WHITE"), (largura_tela // 2 - 250, altura_tela // 2))
         # pontos = 0
 
     # colocar a pontuação na tela
@@ -310,7 +296,7 @@ while running:
                 if event.button == 1:
                     if pygame.mouse.get_pos()[0] > (largura_tela // 2) - 190 and pygame.mouse.get_pos()[0] < (largura_tela // 2) + 180:
                         if pygame.mouse.get_pos()[1] > (altura_tela // 2) - 90 and pygame.mouse.get_pos()[1] < (altura_tela // 2) + 0:
-                            cena = 2
+                            cena = "historie"
         # elif cena >= 2:
         #     if event.type == pygame.MOUSEBUTTONDOWN:
         #         if event.button == 1:
@@ -327,7 +313,26 @@ while running:
 
 
     if cena == 1:
-        PlayButton()
+        #posições das coisas
+        playPos = ((largura_tela // 2) + 80, (altura_tela // 2)-80)
+        playbutton = pygame.image.load("./Assets/Lucid V1.2/PNG/Flat/64/Play.png")
+        playbutton = pygame.transform.scale(playbutton, (64, 64))
+        pygame.draw.rect(screen, "WHITE", ((largura_tela // 2) - 190, (altura_tela // 2)-90, 370, 90), 2)
+        screen.blit(playbutton, playPos)
+        screen.blit(titleFonte("Play Game", True, "WHITE"), ((largura_tela // 2)-170, (altura_tela // 2)-70))
+    elif cena == "historie":
+        personagem_imagem = pygame.image.load("Assets/Player/Idle.png").convert_alpha()
+        screen.blit(pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((0 * 32, 0), (32, 32))),(1280, 1280)), (-300, -40))
+        screen.blit(titleFonte("Historia", True, "WHITE"), (170, 70))        
+        screen.blit(textFont("Olá, meu nome é Steve. Acabo de perder meu gato.", True, "WHITE"), (650, 500))
+        screen.blit(textFont("Você poderia me ajudar a encontra-lo?", True, "WHITE"), (650, 550))
+        screen.blit(dicaFont("Aperte na tecla 'L' para ajudar o steve e 'Q' para voltar ao menu.", True, "ORANGE"), (900, 100))
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_l:
+                    cena = 2
+                elif event.key == pygame.K_q:
+                    cena = 1
     elif cena == 2:
         PrimeiraFase()
         allSprites_group.update()
