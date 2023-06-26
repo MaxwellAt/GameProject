@@ -20,7 +20,7 @@ elif largura_tela < 640:
 elif largura_tela < 320:
     scala_tranform = (8,8)
 
-escala_para_posicoes = (scala_tranform[1]*0.01)
+escala_para_posicoes = scala_tranform[1]*0.01
 
 
 screen = pygame.display.set_mode((largura_tela, altura_tela))
@@ -348,8 +348,8 @@ def PrimeiraFase(numeroInimigos=1):
 
 music = True
 pygame.mixer.music.load("Assets/Music/Trilha.mp3")
-if music:
-    pygame.mixer.music.play(-1)    
+pygame.mixer.music.play(-1)    
+    
 num_frame = 30
 cenas = {
     "menu": 0,
@@ -358,8 +358,13 @@ cenas = {
     "primeira_fase": 3,
     "segunda_fase": 4,
 }
-cena = cenas["primeira_fase"]
+cena = cenas["historia"]
 while running:
+
+    if not music:
+        pygame.mixer.music.pause()
+    else:
+        pygame.mixer.music.unpause()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -480,13 +485,51 @@ while running:
 
     elif cena == cenas["historia"]:
         personagem_imagem = pygame.image.load("Assets/Player/Idle.png").convert_alpha()
-        screen.blit(pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((0 * 32, 0), (32, 32))),(1280, 1280)), (-350, -40))
-        screen.blit(titleFonte("Historia", True, "WHITE"), (170, 70))        
-        screen.blit(textFont("Olá, meu nome é Steve. Acabo de perder meu gato.", True, "WHITE"), (650, 500))
-        screen.blit(textFont("Você poderia me ajudar a encontra-lo?", True, "WHITE"), (650, 550))
-        screen.blit(dicaFont("Aperte na tecla 'L' para ajudar o steve e 'Q' para voltar ao menu.", True, "ORANGE"), (900, 100))
+        screen.blit(pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((0 * 32, 0), (32, 32))),
+                                           (largura_tela, largura_tela)), 
+                                           (-350* escala_para_posicoes, -40*escala_para_posicoes))
+        screen.blit(titleFonte("Historia", True, "WHITE"), 
+                    (170 * escala_para_posicoes, 70 * escala_para_posicoes))
+        screen.blit(textFont("Olá, meu nome é Steve. Acabo de perder meu gato.", True, "WHITE"), 
+                    (650 * escala_para_posicoes, 500 * escala_para_posicoes))
+        screen.blit(textFont("Você poderia me ajudar a encontra-lo?", True, "WHITE"), 
+                    (650 * escala_para_posicoes, 550 * escala_para_posicoes))
+        screen.blit(dicaFont("Aperte na tecla 'L' para ajudar o steve e 'Q' para voltar ao menu.", True, "ORANGE"), 
+                    (900 * escala_para_posicoes, 100 * escala_para_posicoes))
         # desenhar uma caixa de dialogo em volta do texto com poligono
-        pygame.draw.polygon(screen, "WHITE", ((550,600),(640, 490), (1240, 490), (1240, 590), (640, 590)), 2)
+
+        
+        if option == 1:
+            screen.blit(pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((0 * 32, 0), (32, 32))),
+                                    (largura_tela, largura_tela)), 
+                                    ( largura_tela -350 * escala_para_posicoes, altura_tela -40*escala_para_posicoes))
+            screen.blit(titleFonte("Historia", True, "WHITE"), 
+                        (largura_tela - 170 * escala_para_posicoes, altura_tela + 70 * escala_para_posicoes))
+            screen.blit(textFont("Olá, meu nome é Steve. Acabo de perder meu gato.", True, "WHITE"), 
+                        (largura_tela - 650 , altura_tela + 500 * escala_para_posicoes))
+            screen.blit(textFont("Você poderia me ajudar a encontra-lo?", True, "WHITE"), 
+                        (largura_tela - 650 , altura_tela + 550 * escala_para_posicoes))
+            screen.blit(dicaFont("Aperte na tecla 'L' para ajudar o steve e 'Q' para voltar ao menu.", True, "ORANGE"), 
+                        (largura_tela - 900 , altura_tela + 100 * escala_para_posicoes))
+            pygame.draw.polygon(screen, "WHITE", ((550* escala_para_posicoes,600* escala_para_posicoes),
+                                                (640* escala_para_posicoes, 490* escala_para_posicoes), 
+                                                (1240* escala_para_posicoes+100, 490* escala_para_posicoes), 
+                                                (1240* escala_para_posicoes+100, 590* escala_para_posicoes), 
+                                                (640* escala_para_posicoes, 590* escala_para_posicoes)), 2)
+        else:
+            pygame.draw.polygon(screen, "WHITE", ((550* escala_para_posicoes,600* escala_para_posicoes),
+                                                (640* escala_para_posicoes, 490* escala_para_posicoes), 
+                                                (1240* escala_para_posicoes, 490* escala_para_posicoes), 
+                                                (1240* escala_para_posicoes, 590* escala_para_posicoes), 
+                                                (640* escala_para_posicoes, 590* escala_para_posicoes)), 2)
+        # # fazer o poligono baseado na tela do jogo
+        # pygame.draw.polygon(screen, "WHITE", ((550* escala_para_posicoes,600* escala_para_posicoes),
+        #                                       (640* escala_para_posicoes, 490* escala_para_posicoes), 
+        #                                       (1240* escala_para_posicoes, 490* escala_para_posicoes), 
+        #                                       (1240* escala_para_posicoes, 590* escala_para_posicoes), 
+        #                                       (640* escala_para_posicoes, 590* escala_para_posicoes)), 2)
+
+
         # pygame.draw.rect(screen, "WHITE", (640, 490, 600, 100), 2)
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
