@@ -167,8 +167,8 @@ class Tiro(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (largura_tela - 100, altura_tela - 100)
         # Achar um bom som para o tiro
-        # pygame.mixer.music.load("Assets\gunTest.mp3")
-        # pygame.mixer.music.play()
+        pygame.mixer.music.load("Assets/Music/bala.mp3")
+        pygame.mixer.music.play()
 
     def update(self):
         # Ele tem que eliminar a sprit que ele colidiu
@@ -245,11 +245,10 @@ class Inimigo(pygame.sprite.Sprite):
                 img = pygame.transform.scale(img, scala_tranform)
                 self.imagens.append(img)
         
-
         self.index_lista = 0
         self.image = self.imagens[self.index_lista]
         self.rect = self.image.get_rect()
-        self.rect.center = (largura_tela - 100, altura_tela - 100)
+        self.rect.center = (largura_tela - (100 * escala_para_posicoes), altura_tela - (100 * escala_para_posicoes ) )
 
     def update(self):
         if pygame.sprite.collide_rect(self,personagem):
@@ -260,19 +259,6 @@ class Inimigo(pygame.sprite.Sprite):
             self.index_lista += 0.25
 
         self.image = self.imagens[int(self.index_lista)]
-        self.rect.x += random.randint(-15, 1)
-        self.rect.y += random.randint(-2, 2)
-
-        # if self.rect.x > 600:
-        #     self.rect.x = 600
-
-        if self.rect.y < 500: # 500 é o chão.  E isso serve para fazer a mecanica de fisica do chaol
-            self.rect.y += 10
-        elif self.rect.y > altura_tela:
-            self.rect.y = 500
-
-        # if self.rect.x < 0:
-        #     self.rect.x = 0
 
 inimigo = Inimigo()
 
@@ -315,7 +301,7 @@ class arma(pygame.sprite.Sprite):
 
 
 
-def PrimeiraFase():
+def PrimeiraFase(numeroInimigos=1):
     global pontos
     global cena
     # Criar o primeiro cenario
@@ -334,6 +320,8 @@ def PrimeiraFase():
 
     allSprites_group.add(lifebar)
 
+    allSprites_group.add(botaoPause)
+    
     # gun = arma()
     # allSprites_group.add(gun)
 
@@ -345,22 +333,24 @@ def PrimeiraFase():
 
     if pontos < 1 :
         allSprites_group.add(inimigo)
-
-    allSprites_group.add(botaoPause)
-
-    if pontos >= 20:
+    elif pontos > 0 and pontos < 20:
+        for i in range(numeroInimigos):
+            inimigo.rect.center = (largura_tela - (random.randint(-10,50) * escala_para_posicoes), altura_tela - (random.randint(0,100) * escala_para_posicoes ) )
+            allSprites_group.add(inimigo)
+    elif pontos >= 20:
         allSprites_group.empty()
         screen.blit(titleFonte("Parabéns, você passou de fase", True, "WHITE"), ((largura_tela // 2 - 400) * escala_para_posicoes, (altura_tela // 2 - 100) * escala_para_posicoes ))
         # cena = 3
         screen.blit(titleFonte("Infelizmente não ha mais fases", True, "WHITE"), (largura_tela // 2 - 300, altura_tela // 2 - 50))
         screen.blit(titleFonte("Aperte na tecla 'Q' para voltar ao menu", True, "WHITE"), (largura_tela // 2 - 250, altura_tela // 2))
-        # pontos = 0
-
-    # colocar a pontuação na tela
+        
 
 
 music = True
-num_frame = 60
+pygame.mixer.music.load("Assets/Music/Trilha.mp3")
+if music:
+    pygame.mixer.music.play(-1)    
+num_frame = 30
 cenas = {
     "menu": 0,
     "config": 1,
@@ -389,6 +379,7 @@ while running:
 
 
     screen.fill("black")
+
 
 
     if cena == cenas["menu"]:        
@@ -504,9 +495,25 @@ while running:
                 elif event.key == pygame.K_q:
                     cena = cenas["menu"]
     elif cena == cenas["primeira_fase"]:
-        PrimeiraFase()
-        allSprites_group.update()
-        allSprites_group.draw(screen)
+
+        if pontos == 1:
+            screen.blit(titleFonte("Parabéns, você aprendeu a atirar", True, "WHITE"), ((largura_tela // 2 - 200) * escala_para_posicoes, (altura_tela // 2 - 100) * escala_para_posicoes ))
+            screen.blit(textFont("Aperte na tecla 'L' para continuar", True, "WHITE"), ((largura_tela // 2 - 200) * escala_para_posicoes, (altura_tela // 2 - 50) * escala_para_posicoes))
+            # allSprites_group.clear(screen,screen)
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_l:
+                        pontos += 1
+            # allSprites_group.update()
+            # allSprites_group.draw(screen)
+        elif pontos >= 2:
+            PrimeiraFase(pontos*2)
+            allSprites_group.update()
+            allSprites_group.draw(screen)
+        if pontos == 0:
+            PrimeiraFase()
+            allSprites_group.update()
+            allSprites_group.draw(screen)
 
 
     pygame.display.flip()
