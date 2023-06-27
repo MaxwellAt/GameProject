@@ -1,20 +1,26 @@
 import pygame
-from Objetos import *
-
+# from Objetos import *
+from Telas import *
 
 pygame.init()
 
 altura_e_largura = [(1280, 720), (640, 480), (320, 240)]
+altura_e_largura = altura_e_largura[1]
 
+escala = altura_e_largura[0]//10
 
-screen = pygame.display.set_mode(altura_e_largura[2])
+screen = pygame.display.set_mode(altura_e_largura)
 pygame.display.set_caption("Sabe onde eu estou ? S.O.E.E.")
 clock = pygame.time.Clock()
 running = True
 
-titleFonte = pygame.font.Font(None, 64).render
-textFont = pygame.font.Font(None, 32).render
-dicaFont = pygame.font.Font(None, 16).render
+
+
+
+
+# titleFonte = pygame.font.Font(None, 64).render
+# textFont = pygame.font.Font(None, 32).render
+# dicaFont = pygame.font.Font(None, 16).render
 
 allSprites_group = pygame.sprite.Group() # -> Grupo de Sprits
 
@@ -42,10 +48,7 @@ while running:
 
     screen.fill("black")
 
-
-
-
-
+    menu(screen,altura_e_largura,escala)
 
     pygame.display.flip()
 
