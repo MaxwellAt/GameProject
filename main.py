@@ -5,7 +5,7 @@ from Telas import *
 pygame.init()
 
 altura_e_largura = [(1280, 720), (640, 480), (320, 240)]
-altura_e_largura = altura_e_largura[1]
+altura_e_largura = altura_e_largura[0]
 
 escala = altura_e_largura[0]//10
 
