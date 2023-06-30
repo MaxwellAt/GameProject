@@ -1,7 +1,7 @@
 import pygame
 from .drawConfig import drawConfig
 
-def config(tela,dimensoes,escala,cenas="config",music=True):
+def config(tela,dimensoes,escala,cenas="config  ",music=True):
 
     largura_tela, altura_tela = dimensoes[0], dimensoes[1]
     centro = {

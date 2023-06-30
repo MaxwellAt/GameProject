@@ -49,7 +49,10 @@ while running:
     screen.fill("black")
 
     # menu(screen,altura_e_largura,escala)
-    config(screen,altura_e_largura,escala)
+    # config(screen,altura_e_largura,escala)
+
+    drawIntroduction(screen,altura_e_largura,escala)
+
 
     pygame.display.flip()
 
