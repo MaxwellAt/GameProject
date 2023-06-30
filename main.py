@@ -51,7 +51,7 @@ while running:
     # menu(screen,altura_e_largura,escala)
     # config(screen,altura_e_largura,escala)
 
-    drawIntroduction(screen,altura_e_largura,escala)
+    historia(screen,altura_e_largura,escala)
 
 
     pygame.display.flip()
