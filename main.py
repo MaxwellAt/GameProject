@@ -29,7 +29,7 @@ allSprites_group = pygame.sprite.Group() # -> Grupo de Sprits
 
 
 
-music = False
+music = True
 pygame.mixer.music.load("Assets/Music/Trilha.mp3")
 pygame.mixer.music.play(-1)
 
@@ -66,7 +66,7 @@ while running:
     if cenas["menu"]:
         menu(screen,altura_e_largura,escala,cenas)
     if cenas["config"]:
-        config(screen,altura_e_largura,escala,cenas, music)
+        altura_e_largura, music = config(screen,altura_e_largura,escala,cenas, music)
     if cenas["historia"]:
         historia(screen,altura_e_largura,escala,cenas)
     if cenas["pause"]:

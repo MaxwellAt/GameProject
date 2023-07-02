@@ -77,9 +77,6 @@ class primeiraFase:
         ))
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 if pause.get_rect(center=(centro["x"], escala * 0.5)).collidepoint(mouse_pos):

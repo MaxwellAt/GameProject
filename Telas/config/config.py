@@ -51,25 +51,21 @@ def config(tela,dimensoes,escala,cenas,music):
 
 
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return "quit"
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_q:
-                return "menu"
+                cenas["config"] = False
+                cenas["menu"] = True
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                # print(event.pos)
                 if botoes["1280x720"]["x0"] <= event.pos[0] <= botoes["1280x720"]["x"] and botoes["1280x720"]["y0"] <= event.pos[1] <= botoes["1280x720"]["y"]:
                     dimensoes = (1280, 720)
-                    return "config"
-                if botoes["640x480"]["x0"] <= event.pos[0] <= botoes["640x480"]["x"] and botoes["640x480"]["y0"] <= event.pos[1] <= botoes["640x480"]["y"]:
+                    print(dimensoes)
+                elif botoes["640x480"]["x0"] <= event.pos[0] <= botoes["640x480"]["x"] and botoes["640x480"]["y0"] <= event.pos[1] <= botoes["640x480"]["y"]:
                     dimensoes = (640, 480)
-                    return "config"
-                if botoes["320x240"]["x0"] <= event.pos[0] <= botoes["320x240"]["x"] and botoes["320x240"]["y0"] <= event.pos[1] <= botoes["320x240"]["y"]:
+                    print(dimensoes)
+                elif botoes["320x240"]["x0"] <= event.pos[0] <= botoes["320x240"]["x"] and botoes["320x240"]["y0"] <= event.pos[1] <= botoes["320x240"]["y"]:
                     dimensoes = (320, 240)
-                    return "config"
-                if botoes["musica"]["x0"] <= event.pos[0] <= botoes["musica"]["x"] and botoes["musica"]["y0"] <= event.pos[1] <= botoes["musica"]["y"]:
+                    print(dimensoes)
+                elif botoes["musica"]["x0"] <= event.pos[0] <= botoes["musica"]["x"] and botoes["musica"]["y0"] <= event.pos[1] <= botoes["musica"]["y"]:
                     music = not music
-                    return "config"
-        if event.type == pygame.K_q:
-            return "menu"
+    return dimensoes, music
