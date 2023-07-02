@@ -1,19 +1,20 @@
 import pygame
 # from Objetos import *
 from Telas import *
+from Objetos import *
 
 pygame.init()
 
 altura_e_largura = [(1280, 720), (640, 480), (320, 240)]
-altura_e_largura = altura_e_largura[0]
+altura_e_largura = altura_e_largura[1]
 
 escala = altura_e_largura[0]//10
+
 
 screen = pygame.display.set_mode(altura_e_largura)
 pygame.display.set_caption("Sabe onde eu estou ? S.O.E.E.")
 clock = pygame.time.Clock()
 running = True
-
 
 
 
@@ -28,11 +29,20 @@ allSprites_group = pygame.sprite.Group() # -> Grupo de Sprits
 
 
 
-# music = True
+# music = False
 # pygame.mixer.music.load("Assets/Music/Trilha.mp3")
 # pygame.mixer.music.play(-1)
-    
+
+primeira_fase = primeiraFase(screen,altura_e_largura,escala)
+
 num_frame = 30
+cenas = {
+    "menu": True,
+    "config": False,
+    "historia": False,
+    "pause": False,
+    "primeira_fase": False
+}
 while running:
 
     # if not music:
@@ -50,9 +60,21 @@ while running:
 
     # menu(screen,altura_e_largura,escala)
     # config(screen,altura_e_largura,escala)
+    # historia(screen,altura_e_largura,escala)
+    # menuPause(screen,altura_e_largura,escala)
+    
+    if cenas["menu"]:
+        menu(screen,altura_e_largura,escala,cenas)
+    if cenas["config"]:
+        config(screen,altura_e_largura,escala,cenas, music)
+    if cenas["historia"]:
+        historia(screen,altura_e_largura,escala,cenas)
+    if cenas["pause"]:
+        menuPause(screen,altura_e_largura,escala,cenas)
+    if cenas["primeira_fase"]:
+        primeira_fase.update(cenas)
 
-    historia(screen,altura_e_largura,escala)
-
+    # primeira_fase.update()
 
     pygame.display.flip()
 

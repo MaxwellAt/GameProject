@@ -1,109 +1,113 @@
 import pygame
+from Objetos import *
+import random
+
+class primeiraFase:
+    def __init__(self,screen,dimensoes,escala):
+        self.pontos = 0
+        self.screen = screen
+        self.dimensoes = dimensoes
+        self.escala = escala
+        
+        self.allSprites_group = pygame.sprite.Group() # -> Grupo de Sprits
+
+        
+        self.lifebar = Lifebar((escala  ,escala))
+        self.inimigo = Inimigo((escala,escala))
+        self.inimigos = [self.inimigo]
+        self.personagem = Personagem((escala,escala),self.allSprites_group,self.inimigos)
+
+        
+
+        largura_tela, altura_tela = dimensoes[0], dimensoes[1]
+
+        self.lifebar.rect.center = (escala, escala * 0.5)
+        self.personagem.rect.center = (escala * 0.5, altura_tela - (escala * 0.5))
+        self.inimigo.rect.center = (largura_tela - escala * 0.75,altura_tela - escala * 0.75)
+
+        self.allSprites_group.add(self.personagem)
+
+        self.allSprites_group.add(self.lifebar)
+
+        self.allSprites_group.add(self.inimigo)
 
 
-def primeira_Fase(screen):
-
-    """
-
-        LOGICA DO PERSONAGEM
+        self.allSprites_group.update()
+        self.allSprites_group.draw(screen)
     
+    def draw(self,cenas):
+        screen = self.screen
+        escala = self.escala
+        dimensoes = self.dimensoes
+        largura_tela, altura_tela = dimensoes[0], dimensoes[1]
+
+        pause = pygame.image.load("./Assets/Lucid V1.2/PNG/Flat/64/Pause.png").convert_alpha()
+        pause = pygame.transform.scale(pause, (escala//4, escala//4))
+        pause = pause.subsurface((0, 0, escala//4, escala//4))
+
+        titleFonte = pygame.font.Font(None, escala).render
+        textFont = pygame.font.Font(None, escala//2).render
+
+        centro = {
+            "x": largura_tela // 2,
+            "y": altura_tela // 2
+        }
+
+
+        # Criar o primeiro cenario
+        background = pygame.image.load("./Assets/Primeira fase/Background/Background Props.png")
+        background = pygame.transform.scale(background, (largura_tela, altura_tela))
+        
+        pontuacao = textFont(f"Pontos: {self.pontos}", True, "WHITE")
+        
+        #definir o background
+        screen.blit(background, (0, 0))
+        # plataforma
+        plataforma_pos = (0, altura_tela - 50, largura_tela, 100 * escala)
+        pygame.draw.rect(screen, "GREY", plataforma_pos)
+
+        screen.blit(pontuacao, (
+            largura_tela - pontuacao.get_width() - escala//4,
+            escala * 0.5 - pontuacao.get_height()//2
+        ))
+
+        screen.blit(pause, (
+            centro["x"] - pause.get_width()//2,
+            escala * 0.5 - pause.get_height()//2
+        ))
+
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    self.rect.x -= 10
-                    self.animation = "esquerda"
-                elif event.key == pygame.K_d:
-                    self.rect.x += 10
-                    self.animation = "direita"
-                elif event.key == pygame.K_w:
-                    self.rect.y -= 10
-                elif event.key == pygame.K_s and self.rect.y < altura_tela - (128 * escala_para_posicoes):
-                    self.rect.y += 10
-                elif event.key == pygame.K_SPACE:
-                    if self.animation == "direita":
-                        self.animation = "tiro_direita"
-                        tiro = Tiro(direcao="direita")
-                        allSprites_group.add(tiro)
-                        tiro.rect.center = self.rect.center
-                    elif self.animation == "esquerda":
-                        self.animation = "tiro_esquerda"
-                        tiro = Tiro(direcao="esquerda")
-                        allSprites_group.add(tiro)
-                        tiro.rect.center = self.rect.center        
-                elif event.key == pygame.K_l:
-                    self.rect.y -= (100 * escala_para_posicoes)
-                    self.rect.x += (10 * escala_para_posicoes)
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
-                    if self.animation == "tiro_direita":
-                        self.animation = "direita"
-                    elif self.animation == "tiro_esquerda":
-                        self.animation = "esquerda"
-    """
+            if event.type == pygame.QUIT:
+                running = False
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if pause.get_rect(center=(centro["x"], escala * 0.5)).collidepoint(mouse_pos):
+                    cenas["pause"] = True
+                    cenas["primeira_fase"] = False
 
-    if pontos == 1:
-    screen.blit(titleFonte("Parabéns, você aprendeu a atirar", True, "WHITE"), ((largura_tela // 2 - 200) * escala_para_posicoes, (altura_tela // 2 - 100) * escala_para_posicoes ))
-    screen.blit(textFont("Aperte na tecla 'L' para continuar", True, "WHITE"), ((largura_tela // 2 - 200) * escala_para_posicoes, (altura_tela // 2 - 50) * escala_para_posicoes))
-    # allSprites_group.clear(screen,screen)
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_l:
-                pontos += 1
-    elif pontos >= 2:
-        PrimeiraFase(pontos*2)
-        allSprites_group.update()
-        allSprites_group.draw(screen)
-    if pontos == 0:
-        PrimeiraFase()
-        allSprites_group.update()
-        allSprites_group.draw(screen)
+        pass
 
+    def update(self,cenas):
+        self.draw(cenas)
 
+        if len(self.inimigos) == 0:
+            self.pontos += 1
+            for i in range(self.pontos * 2):
+                self.inimigo = Inimigo((self.escala,self.escala))
+                self.inimigo.rect.center = (
+                    random.randint(int(self.dimensoes[0]//2), int(self.dimensoes[0])),
+                    self.dimensoes[1] - self.escala * random.choice([0.5,0.75,1])
+                )
+                self.inimigos.append(self.inimigo)
+                self.allSprites_group.add(self.inimigo)
+                self.allSprites_group.update()
 
-        """
-def PrimeiraFase(numeroInimigos=1):
-    global pontos
-    global cena
-    # Criar o primeiro cenario
-    background = pygame.image.load("./Assets/Primeira fase/Background/Background Props.png")
-    background = pygame.transform.scale(background, (largura_tela, altura_tela))
-    #definir o background
-    screen.blit(background, (0, 0))
-    # plataforma
-    plataforma_pos = (0, altura_tela - 50, largura_tela, 100 * escala_para_posicoes)
-    pygame.draw.rect(screen, "GREY", plataforma_pos)
+        self.allSprites_group.update()
+        self.allSprites_group.draw(self.screen)
 
-    screen.blit(titleFonte(f"Pontos: {pontos}", True, "WHITE"), (largura_tela - ( 210 * escala_para_posicoes),10))
-
-    
-    allSprites_group.add(personagem)
-
-    allSprites_group.add(lifebar)
-
-    allSprites_group.add(botaoPause)
-    
-    # gun = arma()
-    # allSprites_group.add(gun)
-
-
-    # mecanica de fisica para manter o personagem na plataforma
-    if personagem.rect.center[1] <= altura_tela - (120 * escala_para_posicoes):
-        personagem.rect.y += 10
-
-
-    if pontos < 1 :
-        allSprites_group.add(inimigo)
-    elif pontos > 0 and pontos < 20:
-        for i in range(numeroInimigos):
-            inimigo.rect.center = (largura_tela - (random.randint(-10,50) * escala_para_posicoes), altura_tela - (random.randint(0,100) * escala_para_posicoes ) )
-            allSprites_group.add(inimigo)
-    elif pontos >= 20:
-        allSprites_group.empty()
-        screen.blit(titleFonte("Parabéns, você passou de fase", True, "WHITE"), ((largura_tela // 2 - 400) * escala_para_posicoes, (altura_tela // 2 - 100) * escala_para_posicoes ))
-        # cena = 3
-        screen.blit(titleFonte("Infelizmente não ha mais fases", True, "WHITE"), (largura_tela // 2 - 300, altura_tela // 2 - 50))
-        screen.blit(titleFonte("Aperte na tecla 'Q' para voltar ao menu", True, "WHITE"), (largura_tela // 2 - 250, altura_tela // 2))
-
-"""
-     
+        # if pygame.sprite.collide_rect(self.personagem, self.inimigo):
+        #     self.pontos += 1
+        #     self.inimigo.rect.center = (self.dimensoes[0] - (random.randint(-10,50) * self.escala), self.dimensoes[1] - (random.randint(0,100) * self.escala ) )
+        #     self.allSprites_group.add(self.inimigo)
+        #     self.allSprites_group.update()

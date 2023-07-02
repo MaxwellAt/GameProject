@@ -1,7 +1,7 @@
 import pygame
 from .drawIntroduction import drawIntroduction
 
-def historia(tela,dimensoes,escala):
+def historia(tela,dimensoes,escala,cenas):
 
     drawIntroduction(tela,dimensoes,escala)
 
@@ -9,6 +9,8 @@ def historia(tela,dimensoes,escala):
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_l:
-                print("proximo")
+                cenas["historia"] = False
+                cenas["primeira_fase"] = True
             elif event.key == pygame.K_q:
-                print("voltar")
+                cenas["historia"] = False
+                cenas["menu"] = True

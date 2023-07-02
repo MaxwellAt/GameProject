@@ -1,7 +1,7 @@
 import pygame
-from .drawMenu import drawMenu
+from .drawMenu import drawPauseMenu
 
-def menu(screen,dimensoes,escala,cenas):
+def menuPause(screen,dimensoes,escala,cenas):
 
     largura_tela, altura_tela = dimensoes[0], dimensoes[1]
     centro = {
@@ -24,7 +24,7 @@ def menu(screen,dimensoes,escala,cenas):
     }
 
     
-    drawMenu(screen,dimensoes,escala)
+    drawPauseMenu(screen,dimensoes,escala)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -32,8 +32,8 @@ def menu(screen,dimensoes,escala,cenas):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if playbutton["x0"] <= event.pos[0] <= playbutton["x"] and playbutton["y0"] <= event.pos[1] <= playbutton["y"]:
-                    cenas["menu"] = False
-                    cenas["historia"] = True
+                    cenas["pause"] = False
+                    cenas["primeira_fase"] = True
                 if config_button["x0"] <= event.pos[0] <= config_button["x"] and config_button["y0"] <= event.pos[1] <= config_button["y"]:
-                    cenas["menu"] = False
+                    cenas["pause"] = False
                     cenas["config"] = True

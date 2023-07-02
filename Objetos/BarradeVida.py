@@ -1,7 +1,7 @@
 import pygame
 
 class Lifebar(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,scala_tranform):
         pygame.sprite.Sprite.__init__(self)
         
         lifeBar = pygame.image.load("Assets/Pixel UI pack 3/06.png").convert_alpha()
@@ -10,18 +10,18 @@ class Lifebar(pygame.sprite.Sprite):
         
         for i in range(4):
             img = lifeBar.subsurface(pygame.Rect((i * 32, 32), (32+16, 16)))
-            img = pygame.transform.scale(img, scala_tranform)
+            img = pygame.transform.scale(img, (scala_tranform[0]+64,scala_tranform[1]))
             self.imagens.append(img)
         
         self.index_lista = 0
         self.image = self.imagens[self.index_lista]
 
         self.rect = self.image.get_rect()
-        self.rect.center = (100, 40)
+        self.rect.center = (0, 0)
 
     def update(self):
-        if self.index_lista >= len(self.imagens) - 1:
-            self.index_lista = 0
-        else:
-            self.index_lista += 1
+        # if self.index_lista >= len(self.imagens) - 1:
+        #     self.index_lista = 0
+        # else:
+        #     self.index_lista += 1
         self.image = self.imagens[self.index_lista]

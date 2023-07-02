@@ -1,3 +1,5 @@
-# from .menu import menu
-# from .config import config
-from .introducao import historia
+from .menu import *
+from .config import *
+from .PauseMenu import *
+from .introducao import *
+from .PrimeiraFase import primeiraFase
