@@ -29,9 +29,9 @@ allSprites_group = pygame.sprite.Group() # -> Grupo de Sprits
 
 
 
-# music = False
-# pygame.mixer.music.load("Assets/Music/Trilha.mp3")
-# pygame.mixer.music.play(-1)
+music = False
+pygame.mixer.music.load("Assets/Music/Trilha.mp3")
+pygame.mixer.music.play(-1)
 
 primeira_fase = primeiraFase(screen,altura_e_largura,escala)
 
@@ -45,10 +45,10 @@ cenas = {
 }
 while running:
 
-    # if not music:
-    #     pygame.mixer.music.pause()
-    # else:
-    #     pygame.mixer.music.unpause()
+    if not music:
+        pygame.mixer.music.pause()
+    else:
+        pygame.mixer.music.unpause()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
