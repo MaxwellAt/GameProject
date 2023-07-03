@@ -6,9 +6,9 @@ from Objetos import *
 pygame.init()
 
 altura_e_largura = [(1280, 720), (640, 480), (320, 240)]
-altura_e_largura = altura_e_largura[1]
-
+altura_e_largura = altura_e_largura[2]
 escala = altura_e_largura[0]//10
+
 
 
 screen = pygame.display.set_mode(altura_e_largura)
@@ -53,26 +53,23 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-
+    
+    
 
     screen.fill("black")
-
-    # menu(screen,altura_e_largura,escala)
-    # config(screen,altura_e_largura,escala)
-    # historia(screen,altura_e_largura,escala)
-    # menuPause(screen,altura_e_largura,escala)
     
-    if cenas["menu"]:
-        menu(screen,altura_e_largura,escala,cenas)
-    if cenas["config"]:
-        altura_e_largura, music = config(screen,altura_e_largura,escala,cenas, music)
-    if cenas["historia"]:
-        historia(screen,altura_e_largura,escala,cenas)
-    if cenas["pause"]:
-        menuPause(screen,altura_e_largura,escala,cenas)
     if cenas["primeira_fase"]:
         primeira_fase.update(cenas)
+    elif cenas["config"]:
+        altura_e_largura, music = config(screen,altura_e_largura,escala,cenas, music)
+        escala = altura_e_largura[0]//10
+        primeira_fase = primeiraFase(screen,altura_e_largura,escala)
+    elif cenas["historia"]:
+        historia(screen,altura_e_largura,escala,cenas)
+    elif cenas["pause"]:
+        menuPause(screen,altura_e_largura,escala,cenas)
+    else:
+        menu(screen,altura_e_largura,escala,cenas) 
 
     # primeira_fase.update()
 

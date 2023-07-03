@@ -6,8 +6,8 @@ def drawIntroduction(tela,dimensoes,escala):
     largura_tela, altura_tela = dimensoes[0], dimensoes[1]
 
     titleFonte = pygame.font.Font(None, escala).render
-    textFont = pygame.font.Font(None, escala//3).render
-    dicaFont = pygame.font.Font(None, escala//6).render
+    textFont = pygame.font.Font(None, escala//2).render
+    dicaFont = pygame.font.Font(None, escala//4).render
 
     centro = {
         "x": largura_tela // 2,

@@ -17,7 +17,11 @@ class primeiraFase:
         self.inimigos = [self.inimigo]
         self.personagem = Personagem((escala,escala),self.allSprites_group,self.inimigos)
 
-        
+        self.allSprites_group.add(self.personagem)
+
+        self.allSprites_group.add(self.lifebar)
+
+        self.allSprites_group.add(self.inimigo)        
 
         largura_tela, altura_tela = dimensoes[0], dimensoes[1]
 
@@ -25,17 +29,13 @@ class primeiraFase:
         self.personagem.rect.center = (escala * 0.5, altura_tela - (escala * 0.5))
         self.inimigo.rect.center = (largura_tela - escala * 0.75,altura_tela - escala * 0.75)
 
-        self.allSprites_group.add(self.personagem)
-
-        self.allSprites_group.add(self.lifebar)
-
-        self.allSprites_group.add(self.inimigo)
 
 
-        self.allSprites_group.update()
-        self.allSprites_group.draw(screen)
     
     def draw(self,cenas):
+
+
+
         screen = self.screen
         escala = self.escala
         dimensoes = self.dimensoes
@@ -82,6 +82,27 @@ class primeiraFase:
                 if pause.get_rect(center=(centro["x"], escala * 0.5)).collidepoint(mouse_pos):
                     cenas["pause"] = True
                     cenas["primeira_fase"] = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if self.personagem.animation == "direita":
+                        self.personagem.animation = "tiro_direita"
+                        tiro = Tiro("direita",self.personagem.inimigos)
+                        self.personagem.allSprites_group.add(tiro)
+                        tiro.rect.center = self.personagem.rect.center
+
+                    elif self.personagem.animation == "esquerda":
+                        self.personagem.animation = "tiro_esquerda"
+                        tiro = Tiro("esquerda",self.personagem.inimigos)
+                        self.personagem.allSprites_group.add(tiro)
+                        tiro.rect.center = self.personagem.rect.center
+                        
+
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE:
+                    if self.personagem.animation == "tiro_direita":
+                        self.personagem.animation = "direita"
+                    elif self.personagem.animation == "tiro_esquerda":
+                        self.personagem.animation = "esquerda"
 
         pass
 

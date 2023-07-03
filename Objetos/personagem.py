@@ -8,7 +8,7 @@ class Personagem(pygame.sprite.Sprite):
         self.animation = "parado" # -> Mudar sprit
         self.allSprites_group = allSprites_group
         self.inimigos = inimigos
-
+        self.escala = scala_tranform[0]
 
         personagem_imagem = pygame.image.load("Assets/Player/Idle.png").convert_alpha()
         personagem_gun = pygame.image.load("Assets/Player/Shoot.png").convert_alpha()
@@ -29,12 +29,12 @@ class Personagem(pygame.sprite.Sprite):
             pygame.transform.scale(personagem_gun.subsurface(pygame.Rect((3 * 32, 96), (32, 32))),scala_tranform),
         ]
         self.ImagemParaDireita = [
-            pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((1 * 32, 64), (32, 32))), scala_tranform),
-            pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((2 * 32, 64), (32, 32))), scala_tranform)
+            pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((0 * 32, 64), (32, 32))), scala_tranform),
+            pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((1 * 32, 64), (32, 32))), scala_tranform)
         ]
         self.ImagemParaEsquerda = [
-            pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((1 * 32, 96), (32, 32))), scala_tranform),
-            pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((2 * 32, 96), (32, 32))), scala_tranform)
+            pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((0 * 32, 96), (32, 32))), scala_tranform),
+            pygame.transform.scale(personagem_imagem.subsurface(pygame.Rect((1 * 32, 96), (32, 32))), scala_tranform)
         ]
 
 
@@ -63,56 +63,40 @@ class Personagem(pygame.sprite.Sprite):
         else:
             self.image = self.imagens[int(self.index_lista)]
         
-        for event in pygame.event.get():
-            if pygame.key.get_pressed()[pygame.K_RIGHT]:
-                self.animation = "direita"
+
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_RIGHT]:
+            self.animation = "direita"
+            if self.rect.x < pygame.display.get_surface().get_width():
                 self.rect.x += 10
-            elif pygame.key.get_pressed()[pygame.K_LEFT]:
-                self.animation = "esquerda"
+        elif keys[pygame.K_LEFT]:
+            self.animation = "esquerda"
+            if self.rect.x > 0:
                 self.rect.x -= 10
-            elif pygame.key.get_pressed()[pygame.K_UP]:
+        elif keys[pygame.K_UP]:
+            if self.rect.y > pygame.display.get_surface().get_height() - 100:
                 self.rect.y -= 10
-                self.animation = "parado"
-                # self.animation = "tiro_direita"
-            elif pygame.key.get_pressed()[pygame.K_DOWN]:
+            self.animation = "parado"
+            # self.animation = "tiro_direita"
+        elif keys[pygame.K_DOWN]:
+            if self.rect.centery < pygame.display.get_surface().get_height():
                 self.rect.y += 10
-                self.animation = "parado"
-                # self.animation = "tiro_esquerda"
+            self.animation = "parado"
+            # self.animation = "tiro_esquerda"
+        # elif keys[pygame.K_SPACE]:
+        #     if self.animation == "direita":
+        #         self.animation = "tiro_direita"
+        #         tiro = Tiro("direita",self.inimigos)
+        #         self.allSprites_group.add(tiro)
+        #         tiro.rect.center = self.rect.center
+        #     elif self.animation == "esquerda":
+        #         self.animation = "tiro_esquerda"
+        #         tiro = Tiro("esquerda",self.inimigos)
+        #         self.allSprites_group.add(tiro)
+        #         tiro.rect.center = self.rect.center
+        # else:
+        #     self.animation = "parado"
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    self.animation = "direita"
-                    self.rect.x += 10
-                elif event.key == pygame.K_LEFT:
-                    self.animation = "esquerda"
-                    self.rect.x -= 10
-                elif event.key == pygame.K_UP:
-                    self.rect.y -= 10
-                    self.animation = "parado"
-                    # self.animation = "tiro_direita"
-                elif event.key == pygame.K_DOWN:
-                    self.rect.y += 10
-                    self.animation = "parado"
-                    # self.animation = "tiro_esquerda"
-                elif event.key == pygame.K_SPACE:
-                    if self.animation == "direita":
-                        self.animation = "tiro_direita"
-                        tiro = Tiro("direita",self.inimigos)
-                        self.allSprites_group.add(tiro)
-                        tiro.rect.center = self.rect.center
 
-                    elif self.animation == "esquerda":
-                        self.animation = "tiro_esquerda"
-                        tiro = Tiro("esquerda",self.inimigos)
-                        self.allSprites_group.add(tiro)
-                        tiro.rect.center = self.rect.center
-                        
 
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
-                    if self.animation == "tiro_direita":
-                        self.animation = "direita"
-                    elif self.animation == "tiro_esquerda":
-                        self.animation = "esquerda"
-            # else:
-            #     self.animation = "parado"

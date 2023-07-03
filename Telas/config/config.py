@@ -59,12 +59,15 @@ def config(tela,dimensoes,escala,cenas,music):
             if event.button == 1:
                 if botoes["1280x720"]["x0"] <= event.pos[0] <= botoes["1280x720"]["x"] and botoes["1280x720"]["y0"] <= event.pos[1] <= botoes["1280x720"]["y"]:
                     dimensoes = (1280, 720)
+                    pygame.display.set_mode(dimensoes)
                     print(dimensoes)
                 elif botoes["640x480"]["x0"] <= event.pos[0] <= botoes["640x480"]["x"] and botoes["640x480"]["y0"] <= event.pos[1] <= botoes["640x480"]["y"]:
                     dimensoes = (640, 480)
+                    pygame.display.set_mode(dimensoes)
                     print(dimensoes)
                 elif botoes["320x240"]["x0"] <= event.pos[0] <= botoes["320x240"]["x"] and botoes["320x240"]["y0"] <= event.pos[1] <= botoes["320x240"]["y"]:
                     dimensoes = (320, 240)
+                    pygame.display.set_mode(dimensoes)
                     print(dimensoes)
                 elif botoes["musica"]["x0"] <= event.pos[0] <= botoes["musica"]["x"] and botoes["musica"]["y0"] <= event.pos[1] <= botoes["musica"]["y"]:
                     music = not music
