@@ -1,0 +1,23 @@
+:::: Manual para a ideia central da nossa refatoração :::::
+
+
+Objetos, serão criados em classes para serem animados por conta da pixel arte e instaciados
+no main.py do jogo. La serão passados como parametro para a função responsavel de ditar as regras
+daquela fase. 
+
+Então, so crie com animações e depois instacie no main. Só issso
+
+"""
+
+    EX:
+
+    class Personagem():
+        def __init__():
+            # So animações.
+        
+        def update():
+            # Sem logica de jogo nenhuma. Só animações.
+
+    personagem = Personagem() -> Isso no main.py do jogo.
+
+"""
